@@ -29,18 +29,18 @@ public class MainActivity extends Activity {
 	FragmentManager fragmentManager;	
 	static Activity activity;
 	SensorDialog sensorDialog;
-	static SensorManager mSensorManager;	
+	static SensorManager mSensorManager;
 	
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);        
+        setContentView(R.layout.activity_main);
         activity = this;
         tvInfo = (TextView) findViewById(R.id.tv_info);
         fragmentManager = getFragmentManager();
         sensorDialog = new SensorDialog();
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE); 
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     }
     
 	@Override
@@ -93,6 +93,7 @@ public static class SensorDialog extends DialogFragment{
 		String sensorNames[];
 		int sensorTypes[];
 		List<Sensor> sensorList;
+		Sensor sensorTemp;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {	
@@ -126,8 +127,11 @@ public static class SensorDialog extends DialogFragment{
 				@Override
 				public void onItemClick(AdapterView<?> adapter, View v, int i, long l) {
 					Sensor sensor = mSensorManager.getDefaultSensor(sensorTypes[i]);
-					mSensorManager.unregisterListener(sEListener);
-					mSensorManager.registerListener(sEListener, sensor, SensorManager.SENSOR_DELAY_FASTEST);					
+					mSensorManager.unregisterListener(sEListener, sensorTemp);
+					mSensorManager = null;
+			        mSensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
+					mSensorManager.registerListener(sEListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+					sensorTemp = sensor;
 					dismiss();
 				}
 			});
